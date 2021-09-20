@@ -9,7 +9,7 @@ plugins {
 
 ext {
     pluginId = 'org.hibernate.build.xjc-jakarta'
-    pluginVersion = '2.2.1-SNAPSHOT'
+    pluginVersion = '1.0.0-SNAPSHOT'
 
     //noinspection GrUnresolvedAccess
     project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
@@ -31,9 +31,37 @@ dependencies {
     implementation localGroovy()
 
     testImplementation gradleApi()
-    testImplementation 'org.assertj:assertj-core:3.14.0'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation 'org.assertj:assertj-core:3.20.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+}
+
+gradlePlugin {
+    plugins {
+        create("xjc") {
+            id = pluginId
+            implementationClass = "org.hibernate.build.gradle.xjc.jakarta.XjcPlugin"
+        }
+    }
+}
+
+pluginBundle {
+    website = "https://github.com/sebersole/xjc-plugin-jakarta"
+    vcsUrl = "https://github.com/sebersole/xjc-plugin-jakarta"
+    tags = ["gradle", "xjc", "xjb", "jakarta"]
+
+    mavenCoordinates {
+        groupId = project.group.toString()
+        artifactId = project.name
+        version = project.version.toString()
+    }
+
+    plugins {
+        getByName("xjc") {
+            displayName = "Gradle plugin for Jakarta XML binding"
+            description = "Integrates Jakarta XML binding into Gradle build"
+        }
+    }
 }
 
 test {

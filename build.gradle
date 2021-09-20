@@ -9,7 +9,7 @@ plugins {
 
 ext {
     pluginId = 'org.hibernate.build.xjc-jakarta'
-    pluginVersion = '1.0.1'
+    pluginVersion = '1.0.2-SNAPSHOT'
 
     //noinspection GrUnresolvedAccess
     project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )

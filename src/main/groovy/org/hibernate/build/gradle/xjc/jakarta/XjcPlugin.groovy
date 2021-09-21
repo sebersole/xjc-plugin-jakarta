@@ -26,13 +26,8 @@ class XjcPlugin implements Plugin<Project> {
 		final Configuration configuration = project.configurations.maybeCreate( "xjc" )
 		configuration.setDescription( "Dependencies for running xjc (JAXB class generation)" )
 		configuration.defaultDependencies {dependencies ->
-			dependencies.add( project.getDependencies().create( 'org.glassfish.jaxb:jaxb-runtime:3.0.0' ) )
-			dependencies.add( project.getDependencies().create( 'jakarta.xml.bind:jakarta.xml.bind-api:3.0.1' ) )
 			dependencies.add( project.getDependencies().create( 'org.glassfish.jaxb:jaxb-xjc:3.0.2' ) )
-//			dependencies.add( project.getDependencies().create( "org.jvnet.jaxb2_commons:jaxb2-basics:0.12.0" ) )
-//			dependencies.add( project.getDependencies().create( "org.jvnet.jaxb2_commons:jaxb2-basics-ant:0.12.0" ) )
-			dependencies.add( project.getDependencies().create( 'jakarta.activation:jakarta.activation-api:2.0.1' ) )
-			dependencies.add( project.getDependencies().gradleApi() )
+			dependencies.add( project.getDependencies().create( 'org.glassfish.jaxb:jaxb-runtime:3.0.2' ) )
 		}
 
 		// Create the xjc grouping task

@@ -2,64 +2,48 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
 
-    // publishing
-    id 'com.gradle.plugin-publish' version '0.11.0'
-    id "nu.studer.credentials" version "2.1"
+//    // publishing
+    id "com.gradle.plugin-publish" version "1.2.1"
+//    id "nu.studer.credentials" version "2.1"
 }
 
 ext {
-    pluginId = 'org.hibernate.build.xjc-jakarta'
-    pluginVersion = '1.0.3-SNAPSHOT'
-
-    //noinspection GrUnresolvedAccess
-    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
-    //noinspection GrUnresolvedAccess
-    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
+//    //noinspection GrUnresolvedAccess
+//    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
+//    //noinspection GrUnresolvedAccess
+//    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
 }
 
 group = 'org.hibernate.build.gradle'
-version = ext.pluginVersion
+version = '2.0.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    api 'jakarta.inject:jakarta.inject-api:2.0.0'
+    api "jakarta.inject:jakarta.inject-api:2.0.0"
 
     implementation gradleApi()
     implementation localGroovy()
 
     testImplementation gradleApi()
-    testImplementation 'org.assertj:assertj-core:3.20.2'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.0'
+    testImplementation "org.assertj:assertj-core:3.20.2"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.8.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.8.0"
 }
 
 gradlePlugin {
-    plugins {
-        create("xjc") {
-            id = pluginId
-            implementationClass = "org.hibernate.build.gradle.xjc.jakarta.XjcPlugin"
-        }
-    }
-}
-
-pluginBundle {
     website = "https://github.com/sebersole/xjc-plugin-jakarta"
     vcsUrl = "https://github.com/sebersole/xjc-plugin-jakarta"
-    tags = ["gradle", "xjc", "xjb", "jakarta"]
-
-    mavenCoordinates {
-        groupId = project.group.toString()
-        artifactId = project.name
-        version = project.version.toString()
-    }
 
     plugins {
-        getByName("xjc") {
+        xjc {
+            id = "org.hibernate.build.xjc-jakarta"
+            implementationClass = "org.hibernate.build.gradle.xjc.jakarta.XjcPlugin"
             displayName = "Gradle plugin for Jakarta XML binding"
             description = "Integrates Jakarta XML binding into Gradle build"
+            tags.set( ["gradle", "xjc", "xjb", "jakarta"] )
         }
     }
 }

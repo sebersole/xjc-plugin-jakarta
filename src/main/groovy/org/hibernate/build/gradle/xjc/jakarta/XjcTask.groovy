@@ -3,6 +3,7 @@ package org.hibernate.build.gradle.xjc.jakarta
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Input
@@ -49,12 +50,20 @@ abstract class XjcTask extends DefaultTask {
     }
 
     @OutputDirectory
+    @PathSensitive( PathSensitivity.RELATIVE )
     DirectoryProperty getOutputDirectory() {
         return outputDirectory
     }
 
+    @Input
+    Property<Boolean> getCleanOutputDirectory() {
+        return cleanOutputDirectory
+    }
+
     @TaskAction
     void generateJaxbBindings() {
+        project.delete( outputDirectory.get().asFileTree )
+
         project.ant.xjc(
                 destdir: outputDirectory.get().asFile.absolutePath,
                 binding: xjcBindingFile.get().asFile.absolutePath,

@@ -2,22 +2,29 @@ package org.hibernate.build.gradle.xjc.jakarta;
 
 import org.gradle.api.NamedDomainObjectFactory;
 import org.gradle.api.Project;
-import org.gradle.api.plugins.JavaPluginConvention;
+import org.gradle.api.Task;
+import org.gradle.api.file.Directory;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
+import org.gradle.api.tasks.SourceSetContainer;
+
+import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 
 /**
  * Used as the factory for instances added to the {@link XjcExtension#getSchemas()} container.
- *
- * For each schema descriptor, an xjc task is created and wired up
+ * <p>
+ * For each schema descriptor, an XjcTask is created and wired up.
  *
  * @author Steve Ebersole
  */
 public class SchemaDescriptorFactory implements NamedDomainObjectFactory<SchemaDescriptor> {
 	private final XjcExtension xjcExtension;
+	private final Task groupingTask;
 	private final Project project;
 
-	public SchemaDescriptorFactory(XjcExtension xjcExtension, Project project) {
+	public SchemaDescriptorFactory(XjcExtension xjcExtension, Task groupingTask, Project project) {
 		this.xjcExtension = xjcExtension;
+		this.groupingTask = groupingTask;
 		this.project = project;
 	}
 
@@ -25,19 +32,25 @@ public class SchemaDescriptorFactory implements NamedDomainObjectFactory<SchemaD
 	public SchemaDescriptor create(String name) {
 		final SchemaDescriptor schemaDescriptor = new SchemaDescriptor( name, project );
 
-		final XjcTask xjcTask = project.getTasks().create( determineXjcTaskName( schemaDescriptor ), XjcTask.class );
-		xjcTask.getXsdFile().set( schemaDescriptor.getXsdFile() );
-		xjcTask.getXjcBindingFile().set( schemaDescriptor.getXjcBindingFile() );
-		xjcTask.getXjcExtensions().set( schemaDescriptor.___xjcExtensions() );
-		xjcTask.getOutputDirectory().convention( xjcExtension.getOutputDirectory().dir( name ) );
+		final String taskName = determineXjcTaskName( schemaDescriptor );
+		final Provider<Directory> taskOutputDirectory = xjcExtension.getOutputDirectory().dir( name );
 
-		final SourceSet mainSourceSet = project.getConvention()
-				.getPlugin( JavaPluginConvention.class )
-				.getSourceSets()
-				.findByName( SourceSet.MAIN_SOURCE_SET_NAME );
-		mainSourceSet.getJava().srcDir( xjcTask.getOutputDirectory() );
+		// register the XjcTask for the schema
+		project.getTasks().register( taskName, XjcTask.class, (task) -> {
+			task.setGroup( "xjc" );
+			task.setDescription( "XJC generation for the " + name + " descriptor" );
+			groupingTask.dependsOn( task );
 
-		project.getTasks().getByName( "xjc" ).dependsOn( xjcTask );
+			// wire up the inputs and outputs
+			task.getXsdFile().convention( schemaDescriptor.getXsdFile() );
+			task.getXjcBindingFile().convention( schemaDescriptor.getXjcBindingFile() );
+			task.getXjcExtensions().convention( schemaDescriptor.___xjcExtensions() );
+			task.getOutputDirectory().convention( taskOutputDirectory );
+
+			final SourceSetContainer sourceSets = project.getExtensions().getByType( SourceSetContainer.class );
+			final SourceSet mainSourceSet = sourceSets.getByName( MAIN_SOURCE_SET_NAME );
+			mainSourceSet.getJava().srcDir( taskOutputDirectory );
+		} );
 
 		return schemaDescriptor;
 	}

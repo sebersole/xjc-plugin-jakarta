@@ -1,0 +1,32 @@
+== Gradle Plugin for Jakarta XJB generation
+
+Gradle plugin for running XJC which generates JAXB binding classes from an XSD schema and optional binding files.
+
+This version uses the Jakarta version of XJC.
+
+It allows configuration of one-or-more schemas and generates a task for performing XJC against each.  While the task can
+be applied and configured on its own, here we will focus on explaining use of the plugin and extension to wire everything up.
+
+
+.Apply the plugin
+----
+plugins {
+    id "org.hibernate.build.xjc-jakarta"
+}
+----
+
+
+The plugin registers an extension named `xjc` which can be used to configure stuff.  The main configuration being the
+base output directory.  Each task will have its own output directory relative to this extension-level one.
+
+.Configure the output dir
+----
+xjc {
+    // "${buildDir}/generated/sources/xjc/main" by default
+    outputDirectory = project.getLayout().getBuildDirectory().dir( "some/other/dir" )
+}
+----
+
+Since the task uses the XJC Ant task under the covers it can sometimes lead to inconsistent state with regard to
+generated source files.  In our experience with Hibernate this happens switching between branches where we changed the
+package name for the generated sources between the branches.  To help with that,

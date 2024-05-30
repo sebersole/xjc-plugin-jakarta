@@ -7,15 +7,13 @@ plugins {
     id "nu.studer.credentials" version "2.1"
 }
 
-ext {
-    //noinspection GrUnresolvedAccess
-    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
-    //noinspection GrUnresolvedAccess
-    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
-}
-
 group = 'org.hibernate.build.gradle'
 version = '2.0.2-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
@@ -50,4 +48,11 @@ gradlePlugin {
 
 test {
     useJUnitPlatform()
+}
+
+ext {
+    //noinspection GrUnresolvedAccess
+    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
+    //noinspection GrUnresolvedAccess
+    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
 }

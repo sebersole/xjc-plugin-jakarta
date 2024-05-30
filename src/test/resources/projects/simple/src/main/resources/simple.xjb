@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<bindings xmlns="https://jakarta.ee/xml/ns/jaxb"
+          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+          version="3.0">
+
+    <bindings schemaLocation="simple.xsd" node="/xsd:schema">
+        <schemaBindings>
+            <package name="org.hibernate.build.gradle.xjc.jakarta" />
+            <nameXmlTransform>
+                <typeName prefix="Jaxb" suffix="Impl"/>
+                <elementName prefix="Jaxb" suffix="Impl"/>
+                <modelGroupName prefix="Jaxb" suffix="Impl"/>
+                <anonymousTypeName prefix="Jaxb" suffix="Impl"/>
+            </nameXmlTransform>
+        </schemaBindings>
+    </bindings>
+
+</bindings>

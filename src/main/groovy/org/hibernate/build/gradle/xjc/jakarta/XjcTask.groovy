@@ -50,14 +50,8 @@ abstract class XjcTask extends DefaultTask {
     }
 
     @OutputDirectory
-    @PathSensitive( PathSensitivity.RELATIVE )
     DirectoryProperty getOutputDirectory() {
         return outputDirectory
-    }
-
-    @Input
-    Property<Boolean> getCleanOutputDirectory() {
-        return cleanOutputDirectory
     }
 
     @TaskAction

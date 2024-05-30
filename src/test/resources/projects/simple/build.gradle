@@ -1,0 +1,26 @@
+plugins {
+	id 'java'
+	id 'org.hibernate.build.xjc-jakarta'
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation "org.glassfish.jaxb:jaxb-xjc:4.0.2"
+	implementation "org.glassfish.jaxb:jaxb-runtime:4.0.2"
+
+	xjc "org.glassfish.jaxb:jaxb-xjc:4.0.2"
+	xjc "org.glassfish.jaxb:jaxb-runtime:4.0.2"
+	xjc rootProject.fileTree(dir: 'patched-libs/jaxb2-basics', include: '*.jar')
+}
+
+xjc {
+	schemas {
+		simple {
+			xsdFile = "src/main/resources/simple.xsd"
+			xjcBindingFile = "src/main/resources/simple.xjb"
+		}
+	}
+}

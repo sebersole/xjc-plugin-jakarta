@@ -21,7 +21,7 @@ public class SchemaDescriptor implements Named {
 
 	private final RegularFileProperty xsdFile;
 	private final RegularFileProperty xjcBindingFile;
-	private SetProperty<String> xjcExtensions;
+	private final SetProperty<String> xjcExtensions;
 
 	public SchemaDescriptor(String name, Project project) {
 		this.name = name;

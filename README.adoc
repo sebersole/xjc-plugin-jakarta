@@ -1,4 +1,4 @@
-== Gradle Plugin for Jakarta XJB generation
+== Gradle Plugin for Jakarta JAXB binding generation (XJC)
 
 Gradle plugin for running XJC which generates JAXB binding classes from an XSD schema and optional binding files.
 
@@ -7,7 +7,7 @@ This version uses the Jakarta version of XJC.
 It allows configuration of one-or-more schemas and generates a task for performing XJC against each.  While the task can
 be applied and configured on its own, here we will focus on explaining use of the plugin and extension to wire everything up.
 
-
+[source,groovy]
 .Apply the plugin
 ----
 plugins {
@@ -19,6 +19,7 @@ plugins {
 The plugin registers an extension named `xjc` which can be used to configure stuff.  The main configuration being the
 base output directory.  Each task will have its own output directory relative to this extension-level one.
 
+[source,groovy]
 .Configure the output dir
 ----
 xjc {
@@ -27,6 +28,74 @@ xjc {
 }
 ----
 
-Since the task uses the XJC Ant task under the covers it can sometimes lead to inconsistent state with regard to
-generated source files.  In our experience with Hibernate this happens switching between branches where we changed the
-package name for the generated sources between the branches.  To help with that,
+
+Each schema upon which to perform XJC is defined and configured through a `NamedDomainObjectContainer` named `schemas` on the `xjc` extension:
+
+[source,groovy]
+.Configure schemas
+----
+xjc {
+    schemas {
+        ...
+    }
+}
+----
+
+Minimally you must define the XSD and binding file to use:
+
+[source,groovy]
+.Schema config basic
+----
+xjc {
+    ...
+    schemas {
+        config {
+            xsdFile = "path/to/config.xsd"
+            xjcBindingFile = "path/to/config.xjb"
+        }
+        ...
+    }
+}
+----
+
+
+Optionally, XJC extensions may be enabled (assuming the appropriate jars are added to the `xjc` Configuration):
+
+[source,groovy]
+.Schema config extensions
+----
+xjc {
+    ...
+    schemas {
+        mapping {
+            xsdFile = "path/to/mapping.xsd"
+            xjcBindingFile = "path/to/mapping.xjb"
+            xjcExtensions += ['inheritance', 'simplify']
+        }
+        ...
+    }
+}
+----
+
+
+[source,groovy]
+.Putting it all together
+----
+xjc {
+    outputDirectory = project.getLayout().getBuildDirectory().dir( "some/other/dir" )
+
+    schemas {
+        config {
+            xsdFile = "path/to/config.xsd"
+            xjcBindingFile = "path/to/config.xjb"
+        }
+        mapping {
+            xsdFile = "path/to/mapping.xsd"
+            xjcBindingFile = "path/to/mapping.xjb"
+            xjcExtensions += ['inheritance', 'simplify']
+        }
+    }
+}
+----
+
+

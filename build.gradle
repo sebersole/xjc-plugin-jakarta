@@ -2,20 +2,20 @@ plugins {
     id 'groovy'
     id 'java-gradle-plugin'
 
-//    // publishing
+    // publishing
     id "com.gradle.plugin-publish" version "1.2.1"
-//    id "nu.studer.credentials" version "2.1"
+    id "nu.studer.credentials" version "2.1"
 }
 
 ext {
-//    //noinspection GrUnresolvedAccess
-//    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
-//    //noinspection GrUnresolvedAccess
-//    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
+    //noinspection GrUnresolvedAccess
+    project.setProperty( 'gradle.publish.key', credentials.hibernatePluginPortalUsername )
+    //noinspection GrUnresolvedAccess
+    project.setProperty( 'gradle.publish.secret', credentials.hibernatePluginPortalPassword )
 }
 
 group = 'org.hibernate.build.gradle'
-version = '2.0.0-SNAPSHOT'
+version = '2.0.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -43,7 +43,7 @@ gradlePlugin {
             implementationClass = "org.hibernate.build.gradle.xjc.jakarta.XjcPlugin"
             displayName = "Gradle plugin for Jakarta XML binding"
             description = "Integrates Jakarta XML binding into Gradle build"
-            tags.set( ["gradle", "xjc", "xjb", "jakarta"] )
+            tags.set( ["xjc", "xjb", "jakarta"] )
         }
     }
 }

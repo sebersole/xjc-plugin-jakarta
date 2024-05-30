@@ -7,6 +7,7 @@ import org.gradle.api.file.Directory;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
+import org.gradle.api.tasks.TaskProvider;
 
 import static org.gradle.api.tasks.SourceSet.MAIN_SOURCE_SET_NAME;
 
@@ -36,10 +37,9 @@ public class SchemaDescriptorFactory implements NamedDomainObjectFactory<SchemaD
 		final Provider<Directory> taskOutputDirectory = xjcExtension.getOutputDirectory().dir( name );
 
 		// register the XjcTask for the schema
-		project.getTasks().register( taskName, XjcTask.class, (task) -> {
+		final TaskProvider<XjcTask> xjcTaskRef = project.getTasks().register( taskName, XjcTask.class, (task) -> {
 			task.setGroup( "xjc" );
 			task.setDescription( "XJC generation for the " + name + " descriptor" );
-			groupingTask.dependsOn( task );
 
 			// wire up the inputs and outputs
 			task.getXsdFile().convention( schemaDescriptor.getXsdFile() );
@@ -51,6 +51,8 @@ public class SchemaDescriptorFactory implements NamedDomainObjectFactory<SchemaD
 			final SourceSet mainSourceSet = sourceSets.getByName( MAIN_SOURCE_SET_NAME );
 			mainSourceSet.getJava().srcDir( taskOutputDirectory );
 		} );
+
+		groupingTask.dependsOn( xjcTaskRef );
 
 		return schemaDescriptor;
 	}

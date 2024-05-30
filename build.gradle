@@ -15,7 +15,7 @@ ext {
 }
 
 group = 'org.hibernate.build.gradle'
-version = '2.0.1'
+version = '2.0.2-SNAPSHOT'
 
 repositories {
     mavenCentral()

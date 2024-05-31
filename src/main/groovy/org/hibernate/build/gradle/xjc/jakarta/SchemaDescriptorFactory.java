@@ -42,15 +42,15 @@ public class SchemaDescriptorFactory implements NamedDomainObjectFactory<SchemaD
 			task.setDescription( "XJC generation for the " + name + " descriptor" );
 
 			// wire up the inputs and outputs
-			task.getXsdFile().convention( schemaDescriptor.getXsdFile() );
-			task.getXjcBindingFile().convention( schemaDescriptor.getXjcBindingFile() );
-			task.getXjcExtensions().convention( schemaDescriptor.___xjcExtensions() );
-			task.getOutputDirectory().convention( taskOutputDirectory );
-
-			final SourceSetContainer sourceSets = project.getExtensions().getByType( SourceSetContainer.class );
-			final SourceSet mainSourceSet = sourceSets.getByName( MAIN_SOURCE_SET_NAME );
-			mainSourceSet.getJava().srcDir( taskOutputDirectory );
+			task.getXsdFile().set( schemaDescriptor.getXsdFile() );
+			task.getXjcBindingFile().set( schemaDescriptor.getXjcBindingFile() );
+			task.getXjcExtensions().set( schemaDescriptor.___xjcExtensions() );
+			task.getOutputDirectory().set( taskOutputDirectory );
 		} );
+
+		final SourceSetContainer sourceSets = project.getExtensions().getByType( SourceSetContainer.class );
+		final SourceSet mainSourceSet = sourceSets.getByName( MAIN_SOURCE_SET_NAME );
+		mainSourceSet.getJava().srcDir( xjcTaskRef );
 
 		groupingTask.dependsOn( xjcTaskRef );
 

@@ -1,10 +1,20 @@
 plugins {
-	id 'java'
+	id 'java-library'
+	id 'maven-publish'
+
 	id 'org.hibernate.build.xjc-jakarta'
 }
 
+group = "org.hibernate.test.xjc.jakarta.simple"
+version = 1.0
+
 repositories {
 	mavenCentral()
+}
+
+java {
+	withJavadocJar()
+	withSourcesJar()
 }
 
 dependencies {
@@ -21,6 +31,22 @@ xjc {
 		simple {
 			xsdFile = "src/main/resources/simple.xsd"
 			xjcBindingFile = "src/main/resources/simple.xjb"
+		}
+	}
+}
+
+logger.lifecycle( "Publishing to : {}", project.localMavenRepo )
+
+publishing {
+	publications {
+		main(MavenPublication) {
+			from components.java
+		}
+	}
+	repositories {
+		maven {
+			name = "temp"
+			url = project.localMavenRepo
 		}
 	}
 }
